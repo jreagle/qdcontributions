@@ -13,6 +13,7 @@ jobs:
         id: matrix
         uses: fjogeleit/http-request-action@v1
         with:
+          method: 'GET'
           url: "https://queridodiario.ok.org.br/api/cities?levels="
       - name: Show Response
         run: |
