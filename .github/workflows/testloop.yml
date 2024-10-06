@@ -7,28 +7,21 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.matrix.outputs.response }}
+      matrix: ${{ steps.matrix.outputs.codarea }}
     steps:
-      - name: Make Request 
+      - name: Read Iterable -> codarea.json
         id: matrix
-        uses: fjogeleit/http-request-action@v1
-        with:
-          method: 'GET'
-          url: "https://queridodiario.ok.org.br/api/cities?levels="
-      - name: Show Response
-        run: |
-          echo ${{ steps.matrix.outputs.response }}
-          echo ${{ steps.matrix.outputs.headers }}
-          echo ${{ steps.matrix.outputs.status }}
-          echo ${{ fromJson(steps.matrix.outputs.response).cities }}
+      - run: echo "codarea=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
+      - run: echo '${{ fromJson(steps.matrix.outputs.codarea) }}'
+
   
   build:
     needs: [ setup ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        response: ${{fromJSON(needs.setup.outputs.matrix).cities}}
+        codarea: ${{fromJSON(needs.setup.outputs.matrix)}}
     steps:
       - run: |
-          echo "${{ matrix.response }}"
+          echo "${{ matrix.codarea }}"
 
