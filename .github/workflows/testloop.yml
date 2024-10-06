@@ -14,13 +14,12 @@ jobs:
           echo "value=[\"a\", \"b\", \"c\"]" >> $GITHUB_OUTPUT
       - run: |
           echo "${{ steps.matrix.outputs.value }}"
-  build:
-    needs: [ setup ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        value: ${{fromJSON(needs.setup.outputs.matrix)}}
-    steps:
-      - run: |
-          echo "${{ matrix.value }}"
+      - name: run curl
+        run: | 
+          qdCities=$(curl -s --request GET \
+          --url https://queridodiario.ok.org.br/api/cities?levels= \
+          --header 'content-type: application/json' \
+          jq -r '.cities'); echo "qdCities=$qdCities" >> $GITHUB_OUTPUT
+    
+
 
