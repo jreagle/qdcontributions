@@ -7,19 +7,27 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.matrix.outputs.value }}
+      matrix: ${{ steps.matrix.outputs.response }}
     steps:
-      - id: matrix
+      - name: Make Request 
+        id: matrix
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://queridodiario.ok.org.br/api/cities?levels="
+      - name: Show Response
         run: |
-          echo "value=[\"a\", \"b\", \"c\"]" >> $GITHUB_OUTPUT
+          echo ${{ steps.matrix.outputs.response }}
+          echo ${{ steps.matrix.outputs.headers }}
+          echo ${{ steps.matrix.outputs.status }}
+          echo ${{ fromJson(steps.matrix.outputs.response).cities }}
+  
+  build:
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        response: ${{fromJSON(needs.setup.outputs.matrix).cities}}
+    steps:
       - run: |
-          echo "${{ steps.matrix.outputs.value }}"
-      - name: run curl
-        run: | 
-          qdCities=$(curl -s --request GET \
-          --url https://queridodiario.ok.org.br/api/cities?levels= \
-          --header 'content-type: application/json' \
-          jq -r '.cities'); echo "qdCities=$qdCities" >> $GITHUB_OUTPUT
-    
-
+          echo "${{ matrix.response }}"
 
