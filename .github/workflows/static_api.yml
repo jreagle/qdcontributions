@@ -14,4 +14,6 @@ jobs:
      - name: Set matrix data
        id: set-matrix
        run: echo "matrix=$(jq -c . < ./api/ro/1100015.json)" >> $GITHUB_OUTPUT
+     - name: Show JSON
+       run: echo ${{ steps.set-matrix.outputs.matrix }}
 
