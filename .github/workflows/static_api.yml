@@ -74,7 +74,7 @@ jobs:
        run: |
           echo $(jq --arg a "${{ steps.get_latest_release.outputs.data }}" '.cities.level = ($a)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
 
-     - uses: actions/upload-artifact@v3
+     - uses: actions/upload-artifact@v4
        with:
           name: my-test-file
           path: ${{ matrix.codarea }}.json
