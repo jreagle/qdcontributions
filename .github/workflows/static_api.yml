@@ -25,8 +25,8 @@ jobs:
        uses: actions/checkout@v4
      - run: |
          city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
-         city_id=${{ fromJSON($city).territory_id }}
-         city_name=${{ fromJSON($city).territory_name }}
-         city_state=${{ fromJSON($city).state_code }}
-         city_level=${{ fromJSON($city).level }}
+         city_id=`echo ${{ fromJSON($city).territory_id }}`
+         city_name=`echo ${{ fromJSON($city).territory_name }}`
+         city_state=`echo ${{ fromJSON($city).state_code }}`
+         city_level=`echo ${{ fromJSON($city).level }}`
          echo "$city_id|$city_name|$city_state|$city_level"
