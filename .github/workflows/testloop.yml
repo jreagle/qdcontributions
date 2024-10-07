@@ -13,6 +13,5 @@ jobs:
         name: Read Iterable -> codarea.json
         run: |
           echo "value=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
-      - name: Show matrix outputs
-        run: |
+      - run: |
           echo '${{ fromJson(steps.matrix.outputs.value) }}'
