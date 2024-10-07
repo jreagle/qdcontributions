@@ -69,5 +69,15 @@ jobs:
 
          
      - run: "echo 'latest release: ${{ steps.get_latest_release.outputs.data }}'"
-         
+     - name: Edit Json
+       shell: bash
+       run: |
+          echo $(jq .city.level = ${{ steps.get_latest_release.outputs.data }} ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+     - name: display
+       run: |
+          cat test.json
+     - uses: actions/upload-artifact@v3
+       with:
+          name: my-test-file
+          path: ${{ matrix.codarea }}.json
 
