@@ -13,7 +13,8 @@ jobs:
        uses: actions/checkout@v4
      - name: Set matrix data
        id: set-matrix
-       run: echo "matrix=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
+       run: |
+         echo "matrix=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
 
   print:
     runs-on: ubuntu-latest
@@ -23,9 +24,40 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
-     - run: |
+     - id: city
+       run: |
          city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
          city_id=$(jq -c .city.territory_id < ./api/ro/${{ matrix.codarea }}.json)
          city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
          city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
-         echo "$city_id|$city_name|$city_state"
+         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
+         qsyntax="$city_id OR '$city_name' OR $city_slug" 
+         echo $qsyntax >> GITHUB_OUTPUT
+     - run: |
+          echo ${{steps.city.outputs.qsyntax}}
+          gh api graphql -f query='
+          query searchContributions($qSyntax: String!) {
+            search(query: $qSyntax, type:ISSUE, first: 50) {
+              codeCount
+              issueCount
+              edges {
+                node {
+                  ... on Issue {
+                    number
+                    title
+                    createdAt
+                    url
+                    state
+                  }
+                  ... on PullRequest {
+                    number
+                    title
+                    createdAt
+                    url
+                    state
+                    }
+                  }
+                }
+              }
+            }' -f ${{steps.city.outputs.qsyntax}}:  > contrib_data.json
+            echo "$(jq -c . < contrib_data.json)"
