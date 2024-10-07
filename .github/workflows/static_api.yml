@@ -77,5 +77,5 @@ jobs:
      - uses: actions/upload-artifact@v4
        with:
           name: my-test-file
-          path: ${{ matrix.codarea }}.json
+          path: ./api/ro/${{ matrix.codarea }}.json
 
