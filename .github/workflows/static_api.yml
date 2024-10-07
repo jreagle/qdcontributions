@@ -33,7 +33,7 @@ jobs:
          city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          repo=" repo:okfn-brasil/querido-diario"
          qsyntax="'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
-         
+
      - uses: octokit/graphql-action@v2.x
        id: get_latest_release
        env:
@@ -66,4 +66,8 @@ jobs:
                   }
                 }
               }
-        - run: "echo 'latest release: ${{ steps.get_latest_release.outputs.data }}'"
+
+         
+     - run: "echo 'latest release: ${{ steps.get_latest_release.outputs.data }}'"
+         
+
