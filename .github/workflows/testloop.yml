@@ -10,8 +10,7 @@ jobs:
       matrix: ${{ steps.matrix.outputs.value }}
     steps:
       - id: matrix
-        name: Read Iterable -> codarea.json
         run: |
-          echo "value=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
+          echo "value=$(jq -c . < codarea.json)" >> $GITHUB_OUTPUT
       - run: |
           echo '${{ fromJson(steps.matrix.outputs.value) }}'
