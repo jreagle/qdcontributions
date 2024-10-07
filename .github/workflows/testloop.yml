@@ -11,6 +11,15 @@ jobs:
     steps:
       - id: matrix
         run: |
-          echo "value=$(jq -c . < codarea.json)" >> $GITHUB_OUTPUT
+          echo "value=[\"a\", \"b\", \"c\"]" >> $GITHUB_OUTPUT
       - run: |
-          echo '${{ fromJson(steps.matrix.outputs.value) }}'
+          echo "${{ steps.matrix.outputs.value }}"
+  build:
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        value: ${{fromJSON(needs.setup.outputs.matrix)}}
+    steps:
+      - run: |
+          echo "${{ matrix.value }}"
