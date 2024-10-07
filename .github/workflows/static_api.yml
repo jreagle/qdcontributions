@@ -32,13 +32,13 @@ jobs:
          city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
          city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          qsyntax="$city_id OR '$city_name' OR $city_slug" 
-         echo $qsyntax >> GITHUB_OUTPUT
+         echo $qsyntax
          
           
      - name: Get project data
        env:
           GH_TOKEN: ${{ secrets.API_TOKEN }}
-          QSYNTAX: ${{steps.city.outputs.qsyntax}}
+          QSYNTAX: "'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
        run: |
           echo ${{steps.city.outputs.qsyntax}}
           gh api graphql -f query='
