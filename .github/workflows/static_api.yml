@@ -21,4 +21,4 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
-     - run: echo $(jq -c . < ./ro/${{ matrix.codarea }}.json)
+     - run: echo $(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
