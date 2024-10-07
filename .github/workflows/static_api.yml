@@ -15,10 +15,11 @@ jobs:
        id: set-matrix
        run: echo "matrix=$(jq -c . < ./codarea.json)" >> $GITHUB_OUTPUT
 
+
   print:
     runs-on: ubuntu-latest
     needs: configure
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
-     - run: echo $(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
+     - run: echo $(jq -c . < api/ro/${{ matrix.codarea }}.json)
