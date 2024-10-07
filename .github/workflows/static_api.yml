@@ -33,7 +33,12 @@ jobs:
          city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          qsyntax="$city_id OR '$city_name' OR $city_slug" 
          echo $qsyntax >> GITHUB_OUTPUT
-     - run: |
+         
+          
+     - name: Get project data
+       env:
+          GH_TOKEN: ${{ secrets.API_TOKEN }}
+       run: |
           echo ${{steps.city.outputs.qsyntax}}
           gh api graphql -f query='
           query searchContributions($qSyntax: String!) {
@@ -59,5 +64,5 @@ jobs:
                   }
                 }
               }
-            }' -f ${{steps.city.outputs.qsyntax}}:  > contrib_data.json
+            }' -f ${{steps.city.outputs.qsyntax}} > contrib_data.json
             echo "$(jq -c . < contrib_data.json)"
