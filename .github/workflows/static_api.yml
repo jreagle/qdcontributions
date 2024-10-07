@@ -38,6 +38,7 @@ jobs:
      - name: Get project data
        env:
           GH_TOKEN: ${{ secrets.API_TOKEN }}
+          QSYNTAX: ${{steps.city.outputs.qsyntax}}
        run: |
           echo ${{steps.city.outputs.qsyntax}}
           gh api graphql -f query='
@@ -64,5 +65,5 @@ jobs:
                   }
                 }
               }
-            }' -f ${{steps.city.outputs.qsyntax}} > contrib_data.json
+            }' -f $QSYNTAX > contrib_data.json
             echo "$(jq -c . < contrib_data.json)"
