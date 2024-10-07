@@ -13,7 +13,7 @@ jobs:
        uses: actions/checkout@v4
      - name: Set matrix data
        id: set-matrix
-       run: echo "matrix=$(jq -c . < ./codarea.json)" >> $GITHUB_OUTPUT
+       run: echo "matrix=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
 
   print:
     runs-on: ubuntu-latest
@@ -23,4 +23,10 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
-     - run: echo $(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
+     - run: |
+         city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
+         city_id=${{ fromJSON($city).territory_id }}
+         city_name=${{ fromJSON($city).territory_name }}
+         city_state=${{ fromJSON($city).state_code }}
+         city_level=${{ fromJSON($city).level }}
+         echo "$city_id|$city_name|$city_state|$city_level"
