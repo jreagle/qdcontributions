@@ -21,5 +21,15 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
-    - name: Get Result
-      run: "echo 'Matrix: ${{ matrix.codarea }}'"
+     - name: Checkout to repository
+       uses: actions/checkout@v4
+     - id: city
+       run: |
+         city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
+         city_id=$(jq -c .city.territory_id < ./api/ro/${{ matrix.codarea }}.json)
+         city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
+         city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
+         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
+         repo=" repo:okfn-brasil/querido-diario"
+         qsyntax="'$city_name' OR $city_id OR $city_slug repo:okfn-brasil/querido-diario"
+         echo $qsyntax
