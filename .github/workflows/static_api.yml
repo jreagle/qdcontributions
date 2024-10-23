@@ -11,19 +11,14 @@ jobs:
         id: graphql
         with:
           script: |
-            const query = `query($owner:String!, $name:String!, $label:String!) {
-              repository(owner:$owner, name:$name){
-                issues(first:100, labels: [$label]) {
-                  nodes {
-                    id
-                  }
+            const query = `query searchContributions($q: String!) {
+              search(query: $q, type:ISSUE, first: 50) {
+                codeCount
+                issueCount
                 }
-              }
-            }`;
+              }`;
             const variables = {
-              owner: 'okfn-brasil',
-              name: 'querido-diario',
-              label: 'epic'
+              q: "'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
             }
             const result = await github.graphql(query, variables)
             console.log(result)
