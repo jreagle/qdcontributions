@@ -4,25 +4,22 @@ on:
   workflow_dispatch:
 
 jobs:
-  list-issues:
+  configure:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/github-script@v7
-        id: graphql
-        with:
-          script: |
-            const query = `query searchContributions($q: String!) {
-              search(query: $q, type:ISSUE, first: 50) {
-                codeCount
-                issueCount
-                }
-              }`;
-            const variables = {
-              q: "'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
-            }
-            const result = await github.graphql(query, variables)
-            console.log(result)
-            return result
-            
-      - name: Get Result
-        run: "echo 'latest release: ${{ steps.graphql.outputs.result }}'"
+     - name: Checkout to repository
+       uses: actions/checkout@v4
+     - name: Set matrix data
+       id: set-matrix
+       run: |
+         echo "matrix=$(jq -c . < ./api/ro/codarea.json)" >> $GITHUB_OUTPUT
+  print:
+    runs-on: ubuntu-latest
+    needs: configure
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+    steps:
+    - name: Get Result
+      run: "echo 'Matrix: ${{ matrix.codarea }}'"
