@@ -23,13 +23,12 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
-     - id: city
+     - name: Edit Json
+       shell: bash
        run: |
-         city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
-         city_id=$(jq -c .city.territory_id < ./api/ro/${{ matrix.codarea }}.json)
-         city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
-         city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
-         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
-         repo=" repo:okfn-brasil/querido-diario"
-         qsyntax="'$city_name' OR $city_id OR $city_slug repo:okfn-brasil/querido-diario"
-         echo $qsyntax
+         DATA=${{ matrix.codarea }}
+          echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+     - uses: actions/upload-artifact@v4
+       with:
+          name: my-test-file
+          path: ./api/ro/${{ matrix.codarea }}.json
