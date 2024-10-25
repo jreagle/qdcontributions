@@ -14,6 +14,8 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
+       with:
+          ref: ${{ github.head_ref }}
      - name: Set matrix data
        id: set-matrix
        run: |
@@ -37,4 +39,3 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git commit -a -m "Add: Action Search Changes [${{ matrix.codarea }}]"
           git push
-          git rebase
