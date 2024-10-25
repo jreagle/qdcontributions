@@ -32,11 +32,14 @@ jobs:
        shell: bash
        run: |
          DATA=$RANDOM
-          echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+         echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json
+         
+  commits:
+    runs-on: ubuntu-latest
+    steps:
      - name: Commit files
        run: |
-          git pull
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Add: Action Search Changes [${{ matrix.codarea }}]"
-          git push
+         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --local user.name "github-actions[bot]"
+         git commit -a -m "Add: Action Search Changes [${{ matrix.codarea }}]"
+         git push
