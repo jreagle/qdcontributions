@@ -38,7 +38,7 @@ jobs:
          city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
          city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          repo="repo:okfn-brasil/querido-diario"
-         queryCity="'$city_name' OR $city_id OR $city_slug $repo"
+         echo "queryCity='$city_name' OR $city_id OR $city_slug $repo"
          echo $queryCity
          searchCity="$(gh api graphql -F q=$QCITY -f query='
             query($q: String!) {
