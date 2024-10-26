@@ -64,6 +64,8 @@ jobs:
          if [[ $(( ${{ strategy.job-index }} + 1 )) -eq ${{ strategy.job-total }} ]] ; then
            echo "Got COMMIT!"
          fi
+       env:
+        GH_TOKEN: ${{ github.token }}
 
      - name: Conditional Commit Change Files (End Matrix)
        if: env.MATRIX_ORDER == strategy.job-total
