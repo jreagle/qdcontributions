@@ -32,7 +32,7 @@ jobs:
        shell: bash
        run: |
          echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
-         queryCity='Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario
+         queryCity='Cotriguaçu' \OR 5103379 \OR mt_cotriguacu repo:okfn-brasil/querido-diario
          searchCity="$(gh api graphql -F q=$QCITY -f query='
             query($q: String!) {
               search(query: $q, type:ISSUE, first: 50) {
