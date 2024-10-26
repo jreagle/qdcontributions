@@ -29,18 +29,13 @@ jobs:
      - name: Checkout to repository
        uses: actions/checkout@v4
      - name: Read JSON File and Store as ENV.VAR
-       run: echo "CITY_JSON=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)" >> $GITHUB_ENV
+       run: echo "CITY=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)" >> $GITHUB_ENV
      - name: Edit Json
        shell: bash
        run: |
          echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
-         city=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)
-         city_id=$(jq -c .city.territory_id < ./api/ro/${{ matrix.codarea }}.json)
-         city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
-         city_state=$(jq -c .city.state_code < ./api/ro/${{ matrix.codarea }}.json)
-         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          repo="repo:okfn-brasil/querido-diario"
-         queryCity="'${{ fromJson(env.CITY_JSON).name }}' OR ${{ fromJson(env.CITY_JSON).id }} OR ${{ fromJson(env.CITY_JSON).slug }} $repo"
+         queryCity="'${{ fromJson(env.CITY).city.territory_name }}' OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          echo $queryCity
          searchCity="$(gh api graphql -F q=$QCITY -f query='
             query($q: String!) {
