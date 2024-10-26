@@ -31,12 +31,36 @@ jobs:
      - name: Edit Json
        shell: bash
        run: |
-         DATA=$RANDOM
-         echo $DATA
-         echo ${{ strategy.job-total }}
-         echo ${{ strategy.job-index }}
          echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
-         echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json
+         queryCity="'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
+         searchCity="$(gh api graphql -F q=$QCITY -f query='
+            query($q: String!) {
+              search(query: $q, type:ISSUE, first: 50) {
+                codeCount
+                issueCount
+                edges {
+                  node {
+                    ... on Issue {
+                      number
+                      title
+                      createdAt
+                      url
+                      state
+                    }
+                    ... on PullRequest {
+                      number
+                      title
+                      createdAt
+                      url
+                      state
+                    }
+                  }
+                }
+              }
+            }
+          ' --jq '.data')"
+         echo $searchCity
+         echo $(jq --arg data "$searchCity" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json
          if [[ $(( ${{ strategy.job-index }} + 1 )) -eq ${{ strategy.job-total }} ]] ; then
            echo "Got COMMIT!"
          fi
