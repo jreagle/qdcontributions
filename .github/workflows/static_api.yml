@@ -33,6 +33,17 @@ jobs:
        run: |
          DATA=$RANDOM
          echo $DATA
+         echo ${{ strategy.job-total }}
+         echo ${{ strategy.job-index }}
          echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json
+         if [[ ${{ strategy.job-index }}) = ${{ strategy.job-total }} ]] ; then
+           echo "Got COMMIT!"
+         fi
+
+     - name: Conditional Commit (End Matrix)
+       if: ${{ strategy.job-index }} == ${{ strategy.job-total }}
+       run: "INDEX MATIX => EQUAL"
+       
+     
          
 
