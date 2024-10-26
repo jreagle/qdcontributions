@@ -42,7 +42,7 @@ jobs:
          fi
 
      - name: Conditional Commit (End Matrix)
-       if: ( strategy.job-index + 1) -eq strategy.job-total
+       if: strategy.job-index -eq 1
        run: echo "INDEX MATIX => EQUAL"
        
      
