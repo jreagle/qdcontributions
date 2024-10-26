@@ -35,15 +35,20 @@ jobs:
          echo $DATA
          echo ${{ strategy.job-total }}
          echo ${{ strategy.job-index }}
-         echo $(( ${{ strategy.job-index }} + 1 ))
+         echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
          echo $(jq --arg data "$DATA" '. += {"gitsearch": $data}' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json
          if [[ $(( ${{ strategy.job-index }} + 1 )) -eq ${{ strategy.job-total }} ]] ; then
            echo "Got COMMIT!"
          fi
 
-     - name: Conditional Commit (End Matrix)
-       if: strategy.job-index == 1
-       run: echo "INDEX MATIX => EQUAL"
+     - name: Conditional Commit Change Files (End Matrix)
+       if: env.MATRIX_ORDER == strategy.job-total
+       run: |
+         echo "INDEX MATIX => EQUAL"
+         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --local user.name "github-actions[bot]"
+         git commit -a -m "Update: From Action Search Changes"
+         git push
        
      
          
