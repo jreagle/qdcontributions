@@ -71,6 +71,9 @@ jobs:
              echo "No significant changes"
           else 
              echo "There are some significant changes, let's trigger something..."
+             git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+             git config --local user.name "github-actions[bot]"
+             git commit -a -m "AutoUpdate: From Action Search Changes"
           fi
 
           
@@ -81,8 +84,10 @@ jobs:
        if: env.MATRIX_ORDER == strategy.job-total
        run: |
          echo "INDEX MATIX => EQUAL"
-
-         git diff --name-only
+          
+         git log
+         echo 'CALL GITLOG'
+         echo git log
          
           UPSTREAM=${1:-'@{u}'}
           LOCAL=$(git rev-parse @)
