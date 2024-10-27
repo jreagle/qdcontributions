@@ -74,6 +74,7 @@ jobs:
              git config --local user.name "github-actions[bot]"
              git commit -m "AutoUpdate: From Action Search Changes" ./api/ro/${{ matrix.codarea }}.json
           fi
+          git log
 
           
        env:
@@ -82,26 +83,9 @@ jobs:
      - name: Conditional Commit & Push Change Files (End Matrix)
        if: env.MATRIX_ORDER == strategy.job-total
        run: |
-        
-         git remote -v
-         
          git log
-         
-          UPSTREAM=${1:-'@{u}'}
-          LOCAL=$(git rev-parse @)
-          REMOTE=$(git rev-parse "$UPSTREAM")
-          BASE=$(git merge-base @ "$UPSTREAM")
-          
-          if [ $LOCAL = $REMOTE ]; then
-              echo "Up-to-date"
-          elif [ $LOCAL = $BASE ]; then
-              echo "Need to pull"
-          elif [ $REMOTE = $BASE ]; then
-              echo "Need to push"
-              git push origin main
-          else
-              echo "Diverged"
-          fi
+         git push origin main
+
      
          
 
