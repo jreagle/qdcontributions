@@ -1,1 +1,22 @@
-{ "city": { "territory_id": "5103379", "territory_name": "Cotriguaçu", "state_code": "MT", "level": "0", "slug": "mt_cotriguacu" }, "gitsearch": "{\"search\":{\"codeCount\":0,\"edges\":[],\"issueCount\":0}}" }
+{ 
+  "city": { 
+    "territory_id": "5103379", 
+    "territory_name": "Cotriguaçu", 
+    "state_code": "MT", 
+    "level": "0", 
+    "slug": "mt_cotriguacu" 
+  }, 
+  "github": {
+    "spider": {
+      "mode": "100644",
+      "path": "data_collection/gazette/spiders/mt/mt_cotriguacu.py",
+      "sha": "b104bea21ccc206fb8f02bcd56592bab2455724c",
+      "size": 341,
+      "type": "blob",
+      "url": "https://api.github.com/repos/okfn-brasil/querido-diario/git/blobs/b104bea21ccc206fb8f02bcd56592bab2455724c"
+    },
+    "prs": {},
+    "issues": {},
+    "commits": {}
+  } 
+}
