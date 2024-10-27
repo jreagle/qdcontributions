@@ -80,14 +80,11 @@ jobs:
        env:
         GH_TOKEN: ${{ github.token }}
 
-     - name: Conditional Commit Change Files (End Matrix)
+     - name: Conditional Commit & Push Change Files (End Matrix)
        if: env.MATRIX_ORDER == strategy.job-total
        run: |
-         echo "INDEX MATIX => EQUAL"
-          
+        
          git log
-         echo 'CALL GITLOG'
-         echo git log
          
           UPSTREAM=${1:-'@{u}'}
           LOCAL=$(git rev-parse @)
@@ -100,6 +97,7 @@ jobs:
               echo "Need to pull"
           elif [ $REMOTE = $BASE ]; then
               echo "Need to push"
+              git push
           else
               echo "Diverged"
           fi
