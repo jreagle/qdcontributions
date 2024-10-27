@@ -41,7 +41,7 @@ jobs:
          echo 'CALL API'
          uf=${{ fromJson(env.CITY).city.state_code  }}
          gh api /repos/okfn-brasil/querido-diario/git/trees/main?recursive=true --jq '.tree' > treeRepo.json
-         echo $(jq -c '[.[] | .path] | index("data_collection/gazette/spiders/mt/mt_cotriguacu.py")'  < treeRepo.json)
+         echo $(jq -c '[.[] | .path]'  < treeRepo.json)
        env:
         GH_TOKEN: ${{ github.token }}
 
