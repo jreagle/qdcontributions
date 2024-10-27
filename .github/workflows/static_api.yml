@@ -35,7 +35,8 @@ jobs:
        run: |
          echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
          repo="repo:okfn-brasil/querido-diario"
-         queryCity="${{ fromJson(env.CITY).city.territory_name }} OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
+         city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
+         queryCity="$city_name OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          echo $queryCity
          echo 'CALL API'
          searchCity="$(gh api graphql -F q="$queryCity" -f query='
@@ -64,12 +65,30 @@ jobs:
             }
           ' --jq '.data.search')"
           echo $searchCity
-
-
+          echo $(jq --arg s "$searchCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          
        env:
         GH_TOKEN: ${{ github.token }}
 
-
+     - name: Conditional Commit Change Files (End Matrix)
+       if: env.MATRIX_ORDER == strategy.job-total
+       run: |
+         echo "INDEX MATIX => EQUAL"
+         
+          UPSTREAM=${1:-'@{u}'}
+          LOCAL=$(git rev-parse @)
+          REMOTE=$(git rev-parse "$UPSTREAM")
+          BASE=$(git merge-base @ "$UPSTREAM")
+          
+          if [ $LOCAL = $REMOTE ]; then
+              echo "Up-to-date"
+          elif [ $LOCAL = $BASE ]; then
+              echo "Need to pull"
+          elif [ $REMOTE = $BASE ]; then
+              echo "Need to push"
+          else
+              echo "Diverged"
+          fi
      
          
 
