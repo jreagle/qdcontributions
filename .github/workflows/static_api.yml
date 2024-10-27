@@ -37,21 +37,34 @@ jobs:
          repo="repo:okfn-brasil/querido-diario"
          queryCity="${{ fromJson(env.CITY).city.territory_name }} OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          echo $queryCity
-         queryCity="'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
          echo 'CALL API'
-         slug=${{ fromJson(env.CITY).city.slug }}
-         declare -l uf=${{ fromJson(env.CITY).city.state_code }}
-         pathSpider="data_collection/gazette/spiders/$uf/$slug.py"
-         echo $pathSpider
-         gh api /repos/okfn-brasil/querido-diario/git/trees/main?recursive=true --jq '.tree' > treeRepo.json
-         indexTree=$(jq --arg jquf $uf --arg jqslug $slug '[.[] | .path] | index("data_collection/gazette/spiders/$jquf/$jqslug.py")'  < treeRepo.json)
-         echo $indexTree
-         if [[ -n "$indexTree" ]]
-         then
-           echo "Empty"
-         else
-           echo $(jq --arg jqidx $indexTree '.[$jqidx]'  < treeRepo.json)
-         fi
+         searchCity="$(gh api graphql -F q=$queryCity -f query='
+            query($q: String!) {
+              search(query: $q, type:ISSUE, first: 50) {
+                issueCount
+                edges {
+                  node {
+                    ... on Issue {
+                      number
+                      title
+                      createdAt
+                      url
+                      state
+                    }
+                    ... on PullRequest {
+                      number
+                      title
+                      createdAt
+                      url
+                      state
+                    }
+                  }
+                }
+              }
+            }
+          ' --jq '.data')"
+          echo $searchCity
+
 
        env:
         GH_TOKEN: ${{ github.token }}
