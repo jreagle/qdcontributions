@@ -14,8 +14,6 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
-       with:
-          ref: ${{ github.head_ref }}
      - name: Set matrix data
        id: set-matrix
        run: |
@@ -85,6 +83,8 @@ jobs:
        if: env.MATRIX_ORDER == strategy.job-total
        run: |
         
+         git remote -v
+         
          git log
          
           UPSTREAM=${1:-'@{u}'}
