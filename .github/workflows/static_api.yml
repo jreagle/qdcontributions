@@ -27,8 +27,6 @@ jobs:
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v4
-       with:
-         path: ./api/ro/
      - name: Read JSON File and Store as ENV.VAR
        run: echo "CITY=$(jq -c . < ./api/ro/${{ matrix.codarea }}.json)" >> $GITHUB_ENV
      - name: Edit Json
