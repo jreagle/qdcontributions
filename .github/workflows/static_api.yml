@@ -90,6 +90,7 @@ jobs:
               echo "Need to pull"
           elif [ $REMOTE = $BASE ]; then
               echo "Need to push"
+              git push
           else
               echo "Diverged"
           fi
