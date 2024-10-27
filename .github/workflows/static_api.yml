@@ -67,6 +67,9 @@ jobs:
           echo $searchCity
           echo $(jq --arg s "$searchCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --local user.name "github-actions[bot]"
+         git commit -a -m "AutoUpdate: From Action Search Changes"
           
        env:
         GH_TOKEN: ${{ github.token }}
