@@ -44,13 +44,13 @@ jobs:
          pathSpider="data_collection/gazette/spiders/$uf/$slug.py"
          echo $pathSpider
          gh api /repos/okfn-brasil/querido-diario/git/trees/main?recursive=true --jq '.tree' > treeRepo.json
-         indexTree=$(jq -c '[.[] | .path] | index("data_collection/gazette/spiders/$uf/$slug.py")'  < treeRepo.json)
+         indexTree=$(jq --arg jquf $uf --arg jqslug $slug '[.[] | .path] | index("data_collection/gazette/spiders/$jquf/$jqslug.py")'  < treeRepo.json)
          echo $indexTree
          if [[ -n "$indexTree" ]]
          then
            echo "Empty"
          else
-           echo "Not empty"
+           echo $(jq --arg jqidx $indexTree '.[$jqidx]'  < treeRepo.json)
          fi
 
        env:
