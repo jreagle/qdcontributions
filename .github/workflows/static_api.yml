@@ -78,6 +78,8 @@ jobs:
        if: env.MATRIX_ORDER == strategy.job-total
        run: |
          echo "INDEX MATIX => EQUAL"
+
+         git status
          
           UPSTREAM=${1:-'@{u}'}
           LOCAL=$(git rev-parse @)
