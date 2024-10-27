@@ -36,7 +36,6 @@ jobs:
          echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
          repo="repo:okfn-brasil/querido-diario"
          queryCity="${{ fromJson(env.CITY).city.territory_name }} OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
-         queryCity="'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
          echo $queryCity
          echo 'CALL API'
          searchCity="$(gh api graphql -F q="$queryCity" -f query='
@@ -63,7 +62,7 @@ jobs:
                 }
               }
             }
-          ' --jq '.data')"
+          ' --jq '.data.search')"
           echo $searchCity
 
 
