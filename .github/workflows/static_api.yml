@@ -39,9 +39,13 @@ jobs:
          echo $queryCity
          queryCity="'Cotriguaçu' OR 5103379 OR mt_cotriguacu repo:okfn-brasil/querido-diario"
          echo 'CALL API'
-         uf=${{ fromJson(env.CITY).city.state_code  }}
+         slug=${{ fromJson(env.CITY).city.slug }}
+         echo $slug
+         declare -l uf=${{ fromJson(env.CITY).city.state_code }}
+         echo $uf
          gh api /repos/okfn-brasil/querido-diario/git/trees/main?recursive=true --jq '.tree' > treeRepo.json
-         echo $(jq -c '[.[] | .path] | index("data_collection/gazette/spiders/mt/mt_cotriguacu.py")'  < treeRepo.json)
+         indexTree=$(jq -c '[.[] | .path] | index("data_collection/gazette/spiders/$uf/$slug.py")'  < treeRepo.json)
+         echo $indexTree
        env:
         GH_TOKEN: ${{ github.token }}
 
