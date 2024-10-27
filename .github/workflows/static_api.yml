@@ -66,6 +66,7 @@ jobs:
           ' --jq '.data.search')"
           echo $searchCity
           echo $(jq --arg s "$searchCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
           
        env:
         GH_TOKEN: ${{ github.token }}
