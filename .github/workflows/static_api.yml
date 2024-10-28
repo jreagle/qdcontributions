@@ -32,13 +32,14 @@ jobs:
      - name: Edit Json
        shell: bash
        run: |
-         echo MATRIX_ORDER=$(( ${{ strategy.job-index }} + 1 )) >> $GITHUB_ENV
          repo="repo:okfn-brasil/querido-diario"
          city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
          queryCity="$city_name OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
+         declare -l uf=${{ fromJson(env.CITY).city.state_code }}
+         pathSpider="data_collection/gazette/spiders/$uf/$slug.py"
          echo $queryCity
          echo 'CALL API'
-         searchCity="$(gh api graphql -F q="$queryCity" -f query='
+         issuesCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
               search(query: $q, type:ISSUE, first: 50) {
                 issueCount
@@ -51,6 +52,18 @@ jobs:
                       url
                       state
                     }
+                  }
+                }
+              }
+            }
+          ' --jq '[.data.search.edges[] | select(.node != {})]')"
+          echo $(jq --arg s "$issuesCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          pullsCity="$(gh api graphql -F q="$queryCity" -f query='
+            query($q: String!) {
+              search(query: $q, type:ISSUE, first: 50) {
+                issueCount
+                edges {
+                  node {
                     ... on PullRequest {
                       number
                       title
@@ -62,9 +75,37 @@ jobs:
                 }
               }
             }
-          ' --jq '.data.search')"
-          echo $searchCity
-          echo $(jq --arg s "$searchCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          ' --jq '[.data.search.edges[] | select(.node != {})]')"
+          echo $(jq --arg s "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          
+          commitsCity="$(gh api graphql -F p="$pathSpider" -f query='
+            {
+              repository(owner: "okfn-brasil", name: "querido-diario") {
+                info: ref(qualifiedName: "main") {
+                  target {
+                    ... on Commit {
+                      history(path: $p) {
+                        nodes {
+                          author {
+                            name
+                            avatarUrl
+                          }
+                          messageHeadline
+                          committedDate
+                          authoredDate
+                          url
+                          oid
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' --jq '.data.repository.info.target.history.nodes')"
+          echo $(jq --arg s "$pullsCity" '.github.commits = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json 
+
+          
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
           if git diff --quiet ./api/ro/${{ matrix.codarea }}.json; then
              echo "No significant changes"
