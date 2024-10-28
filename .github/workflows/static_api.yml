@@ -34,9 +34,9 @@ jobs:
        run: |
          repo="repo:okfn-brasil/querido-diario"
          city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
-         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          queryCity="$city_name OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          declare -l uf=${{ fromJson(env.CITY).city.state_code }}
+         city_slug=${{ fromJson(env.CITY).city.slug }}
          pathSpider="data_collection/gazette/spiders/$uf/$city_slug.py"
          echo $pathSpider
          echo $queryCity
@@ -108,6 +108,7 @@ jobs:
             }
           }
           ' --jq '.data.repository.info.target.history.nodes')"
+          echo $(jq --arg s "$commitsCity" '.github.commits = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           echo $commitsCity
           
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
