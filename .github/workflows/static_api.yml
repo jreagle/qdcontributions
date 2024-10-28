@@ -37,6 +37,7 @@ jobs:
          queryCity="$city_name OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          declare -l uf=${{ fromJson(env.CITY).city.state_code }}
          pathSpider="data_collection/gazette/spiders/$uf/$slug.py"
+         echo $pathSpider
          echo $queryCity
          echo 'CALL API'
          issuesCity="$(gh api graphql -F q="$queryCity" -f query='
@@ -80,6 +81,33 @@ jobs:
           ' --jq '[.data.search.edges[] | select(.node != {})]')"
           echo $(jq --arg s "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           echo $pullsCity
+
+          commitsCity="$(gh api graphql -F p="$pathSpider" -f query='
+          query ($p: String!) {
+            repository(owner: "okfn-brasil", name: "querido-diario") {
+              info: ref(qualifiedName: "main") {
+                target {
+                  ... on Commit {
+                    history(path: $p) {
+                      nodes {
+                        author {
+                          name
+                          avatarUrl
+                        }
+                        messageHeadline
+                        committedDate
+                        authoredDate
+                        url
+                        oid
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          ' --jq '.data.repository.info.target.history.nodes')"
+          echo $commitsCity
           
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
           if git diff --quiet ./api/ro/${{ matrix.codarea }}.json; then
