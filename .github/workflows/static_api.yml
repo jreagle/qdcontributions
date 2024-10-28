@@ -34,9 +34,10 @@ jobs:
        run: |
          repo="repo:okfn-brasil/querido-diario"
          city_name=$(jq -c .city.territory_name < ./api/ro/${{ matrix.codarea }}.json)
+         city_slug=$(jq -c .city.slug < ./api/ro/${{ matrix.codarea }}.json)
          queryCity="$city_name OR ${{ fromJson(env.CITY).city.territory_id  }} OR ${{ fromJson(env.CITY).city.slug }} $repo"
          declare -l uf=${{ fromJson(env.CITY).city.state_code }}
-         pathSpider="data_collection/gazette/spiders/$uf/$slug.py"
+         pathSpider="data_collection/gazette/spiders/$uf/$city_slug.py"
          echo $pathSpider
          echo $queryCity
          echo 'CALL API'
