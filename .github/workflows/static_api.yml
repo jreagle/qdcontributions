@@ -58,6 +58,7 @@ jobs:
             }
           ' --jq '[.data.search.edges[] | select(.node != {})]')"
           echo $(jq --arg s "$issuesCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          
           pullsCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
               search(query: $q, type:ISSUE, first: 50) {
@@ -79,7 +80,7 @@ jobs:
           echo $(jq --arg s "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           
           commitsCity="$(gh api graphql -F p="$pathSpider" -f query='
-            {
+            query ($p: String!) {
               repository(owner: "okfn-brasil", name: "querido-diario") {
                 info: ref(qualifiedName: "main") {
                   target {
