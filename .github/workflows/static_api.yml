@@ -58,6 +58,7 @@ jobs:
             }
           ' --jq '[.data.search.edges[] | select(.node != {})]')"
           echo $(jq --arg s "$issuesCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo $issuesCity
           
           pullsCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
@@ -78,34 +79,7 @@ jobs:
             }
           ' --jq '[.data.search.edges[] | select(.node != {})]')"
           echo $(jq --arg s "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
-          
-          commitsCity="$(gh api graphql -F p="$pathSpider" -f query='
-            query ($p: String!) {
-              repository(owner: "okfn-brasil", name: "querido-diario") {
-                info: ref(qualifiedName: "main") {
-                  target {
-                    ... on Commit {
-                      history(path: $p) {
-                        nodes {
-                          author {
-                            name
-                            avatarUrl
-                          }
-                          messageHeadline
-                          committedDate
-                          authoredDate
-                          url
-                          oid
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          ' --jq '.data.repository.info.target.history.nodes')"
-          echo $(jq --arg s "$pullsCity" '.github.commits = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json 
-
+          echo $pullsCity
           
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
           if git diff --quiet ./api/ro/${{ matrix.codarea }}.json; then
