@@ -42,7 +42,7 @@ jobs:
          echo $queryCity
          echo 'CALL API'
          
-         echo issuesCity="$(gh api graphql -F q="$queryCity" -f query='
+         issuesCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
               search(query: $q, type:ISSUE, first: 50) {
                 issueCount
@@ -59,9 +59,9 @@ jobs:
                 }
               }
             }
-          ' --jq '[.data.search.edges[] | select(.node != {})]')" >> $GITHUB_ENV
-          echo $(jq --arg s "${{ env.issuesCity }}" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
-          echo ${{ env.issuesCity }}
+          ' --jq '[.data.search.edges[] | select(.node != {})]')"
+          echo $(jq --arg "$issuesCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo $issuesCity
           
           pullsCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
