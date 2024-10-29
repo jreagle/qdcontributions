@@ -41,7 +41,8 @@ jobs:
          echo $pathSpider
          echo $queryCity
          echo 'CALL API'
-         issuesCity="$(gh api graphql -F q="$queryCity" -f query='
+         
+         echo issuesCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
               search(query: $q, type:ISSUE, first: 50) {
                 issueCount
@@ -58,9 +59,9 @@ jobs:
                 }
               }
             }
-          ' --jq '[.data.search.edges[] | select(.node != {})]')"
-          echo $(jq --arg s "$issuesCity" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
-          echo $issuesCity
+          ' --jq '[.data.search.edges[] | select(.node != {})]')" >> $GITHUB_ENV
+          echo $(jq --arg s "${{ env.issuesCity }}" '.github.issues = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo ${{ env.issuesCity }}
           
           pullsCity="$(gh api graphql -F q="$queryCity" -f query='
             query($q: String!) {
@@ -80,7 +81,7 @@ jobs:
               }
             }
           ' --jq '[.data.search.edges[] | select(.node != {})]')"
-          echo $(jq --arg s "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo $(jq --arg "$pullsCity" '.github.prs = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           echo $pullsCity
 
           commitsCity="$(gh api graphql -F p="$pathSpider" -f query='
@@ -108,7 +109,7 @@ jobs:
             }
           }
           ' --jq '.data.repository.info.target.history.nodes')"
-          echo $(jq --arg s "$commitsCity" '.github.commits = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
+          echo $(jq --arg "$commitsCity" '.github.commits = ($s)' ./api/ro/${{ matrix.codarea }}.json) > ./api/ro/${{ matrix.codarea }}.json  
           echo $commitsCity
           
           echo $(jq -c .github < ./api/ro/${{ matrix.codarea }}.json)
