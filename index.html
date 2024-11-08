@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contributions of "Querido Diário" - OKFN Brasil</title>
+    <!-- SOCIAL OGP TAGS -->
+    <meta property="og:title" content="Contributions of " Querido Diário" - OKFN Brasil">
+    <meta property="og:site_name" content="OKFN Brasil">
+    <meta property="og:url" content="https://jreagle.github.io/qdcontributions/">
+    <meta property="og:description" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.githubassets.com/assets/github-logo-55c5b9a1fe52.png">
+    <!--BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <!--ICONS BOOTSTRAP -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- DATATABLES -->
+    <link href="modules/DataTables/datatables.min.css" rel="stylesheet">
+    <script src="modules/DataTables/jquery-3.7.1.min.js"></script>
+    <script src="modules/DataTables/datatables.min.js"></script>
+    <style>
+        table#tableOverview.dataTable tbody tr:hover {
+            --bs-bg-opacity: 0.5;
+            background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+            cursor: pointer;
+        }
+
+        table#tableOverview.dataTable tbody tr:hover>.sorting_1 {
+            --bs-bg-opacity: 0.5;
+            background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+            cursor: pointer;
+        }
+
+        /* OVERRIDE => BOOTSTRAP ACCORDION STYLE */
+        .accordion-item {
+            margin-bottom: 8px;
+
+            .accordion-header {
+                .accordion-button {
+                    --bs-bg-opacity: 0.5;
+                    background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+                    color: black;
+                    font-size: large;
+                    padding: 8px 16px;
+                    border: gray 1px solid;
+                    border-bottom: 0px;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                }
+
+                &:not(.collapsed) {
+                    color: black;
+                }
+
+                &:focus {
+                    box-shadow: none
+                }
+            }
+
+            .accordion-body {
+                border: gray 1px solid;
+                border-top: 0px
+            }
+        }
+    </style>
+</head>
+
+<body class="d-none">
+    <header></header>
+    <main>
+        <section id="welcomeHome">
+            <div id="homeJumbotron" class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+                <h1>QD Contributions!</h1>
+                <p>Contributions of "Querido Diário" - OKF Project</p>
+                <button onclick="toggleShowSection('tableHome')" type="button" class="btn btn-primary">Table</button>
+            </div>
+        </section>
+        <section id="tableHome"
+            class="d-flex flex-column min-vh-100 justify-content-center align-items-center p-2 d-none">
+            <button onclick="toggleShowSection('welcomeHome')" type="button"
+                class="btn btn-primary btn-sm">Home</button>
+            <table id="tableOverview" class="hover min-vw-100">
+                <thead>
+                    <tr>
+                        <th class="text-center">Cód.IBGE</th>
+                        <th class="text-center">Nome do Território</th>
+                        <th class="text-center">UF</th>
+                        <th class="text-center">Status Diário</th>
+                        <th class="text-center">Gazettes</th>
+                        <th class="text-center">Contrib.</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">
+                            <input
+                                onkeyup="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                type="search" name="searchIBGECode" id="searchIBGECode" size="8">
+                        </th>
+                        <th class="text-center">
+                            <input
+                                onkeyup="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                type="search" name="searchCityName" id="searchCityName">
+                        </th>
+                        <th class="text-center"><select
+                                onchange="qdTable.column(this.closest('th').cellIndex).search(this.value).draw()"
+                                name="selectUF" id="selectUF">
+                                <option selected value="">TODOS</option>
+                            </select></th>
+                        <th class="text-center"><select class="text-center"
+                                onchange="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                name="selectQDStatus" id="selectQDStatus">
+                                <option selected value="">TODOS</option>
+                                <option value="Desconhecido">Desconhecido (0)</option>
+                                <option value="Conhecido">Conhecido (1)</option>
+                                <option value="Coletado">Coletado (2)</option>
+                                <option value="Disponivel">Disponível (3)</option>
+                                <!-- ALERT: Normalize VALUE/CHAR (Remove Accents) -->
+                            </select></th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this)" type="search" name="searchCityGazettes"
+                                id="searchCityGazettes" size="5">
+                        </th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this)" type="search" name="searchCityContrib"
+                                id="searchCityContrib" size="5">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </section>
+        <section id="cityPage" class="py-2 p-4 d-none">
+            <div class="mb-4 text-center">
+                <button onclick="toggleShowSection('tableHome')" type="button"
+                    class="btn btn-primary btn-sm">Back</button>
+                <h2 class="mt-4" id="cityPageTitle">City Name (IBGE Code)</h2>
+                <span class="d-none text-secondary text-opacity-75">Última Atualização: <b id="dtUpdate">00/00/0000</b></span>
+            </div>
+            <!-- ACCORDIONS -->
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Metadados
+                        </button>
+                    </div>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div>
+                                <!-- <h5 class="ps-2 border-bottom border-secondary">Metadados</h5> -->
+                                <ul id="cityPageInfoContainer" class="p-2  list-unstyled">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Spider: <span id="linkSpider">Wait...</span>
+                        </button>
+                    </div>
+                    <div id="collapseTwo" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary">Collects</h5>
+                                <ul id="cityPageSpiderContainerCollects" class="p-2 list-unstyled">
+                                    <li><b>Total Gazettes: </b><a href="#" target="_blank" rel="noopener noreferrer" id="totalGazettes"
+                                            class="fs-6 badge text-bg-secondary link-underline link-underline-opacity-0">0</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary">Commits (<span id="lenCommits">0</span>)
+                                </h5>
+                                <ul id="cityPageSpiderContainerCommits" class="px-4 py-2">
+                                    <li class="p-2 border border-secondary rounded">
+                                        <a href="#" target="_blank" rel="noopener noreferrer">Commit title</a>
+                                        (jk5g6kjg) |
+                                        <img class="rounded-circle"
+                                            src="https://avatars.githubusercontent.com/u/44185775?v=4&size=24" alt="">
+                                        <span>username</span> | <span>00/00/0000</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                            Contributions (<span id="lenContrib">0</span>)
+                        </button>
+                    </div>
+                    <div id="collapseThree" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary">Pull Requests (<span
+                                        id="lenPulls">0</span>)</h5>
+                                <ul id="cityPageContributionsContainerPulls" class="px-4 py-2">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary">Issues (<span id="lenIssues">0</span>)
+                                </h5>
+                                <ul id="cityPageContributionsContainerIssues" class="px-4 py-2">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+<script src="modules/actions.js"></script>
+</html>
