@@ -20,19 +20,22 @@
         crossorigin="anonymous"></script>
     <!--ICONS BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- JQUERY -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- DATATABLES -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js "></script>
+
+ 
     <style>
-        table#tableOverview.dataTable tbody tr:hover {
+        table#tableCitiesOverview.dataTable tbody tr:hover,
+        table#tableContributorsOverview.dataTable tbody tr:hover {
             --bs-bg-opacity: 0.5;
             background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
             cursor: pointer;
         }
 
-        table#tableOverview.dataTable tbody tr:hover>.sorting_1 {
+        table#tableCitiesOverview.dataTable tbody tr:hover>.sorting_1,
+        table#tableContributorsOverview.dataTable tbody tr:hover>.sorting_1 {
             --bs-bg-opacity: 0.5;
             background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
             cursor: pointer;
@@ -75,18 +78,26 @@
 <body class="d-none">
     <header></header>
     <main>
+        <!-- HOME -->
         <section id="welcomeHome">
             <div id="homeJumbotron" class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
                 <h1>QD Contributions!</h1>
                 <p>Contributions of "Querido Diário" - OKF Project</p>
-                <button onclick="toggleShowSection('tableHome')" type="button" class="btn btn-primary">Table</button>
+                <div class="d-flex gap-4">
+                    <button onclick="toggleShowSection('tableCities')" type="button" class="btn btn-primary">Cities
+                        View</button>
+                    <button onclick="toggleShowSection('tableContributors')" type="button"
+                        class="btn btn-primary">Contributors</button>
+                </div>
+
             </div>
         </section>
-        <section id="tableHome"
+        <!-- CITIES  -->
+        <section id="tableCities"
             class="d-flex flex-column min-vh-100 justify-content-center align-items-center p-2 d-none">
             <button onclick="toggleShowSection('welcomeHome')" type="button"
                 class="btn btn-primary btn-sm">Home</button>
-            <table id="tableOverview">
+            <table id="tableCitiesOverview">
                 <thead>
                     <tr>
                         <th class="text-center">Cód.IBGE</th>
@@ -95,25 +106,26 @@
                         <th class="text-center">Status Diário</th>
                         <th class="text-center">Gazettes</th>
                         <th class="text-center">Contrib.</th>
+                        <th class="text-center">SpiderBase</th>
                     </tr>
                     <tr>
                         <th class="text-center">
                             <input
-                                onkeyup="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                onkeyup="qdTableCities.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
                                 type="search" name="searchIBGECode" id="searchIBGECode" size="8">
                         </th>
                         <th class="text-center">
                             <input
-                                onkeyup="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                onkeyup="qdTableCities.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
                                 type="search" name="searchCityName" id="searchCityName">
                         </th>
                         <th class="text-center"><select
-                                onchange="qdTable.column(this.closest('th').cellIndex).search(this.value).draw()"
+                                onchange="qdTableCities.column(this.closest('th').cellIndex).search(this.value).draw()"
                                 name="selectUF" id="selectUF">
                                 <option selected value="">TODOS</option>
                             </select></th>
                         <th class="text-center"><select class="text-center"
-                                onchange="qdTable.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                onchange="qdTableCities.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
                                 name="selectQDStatus" id="selectQDStatus">
                                 <option selected value="">TODOS</option>
                                 <option value="Desconhecido">Desconhecido (0)</option>
@@ -123,12 +135,21 @@
                                 <!-- ALERT: Normalize VALUE/CHAR (Remove Accents) -->
                             </select></th>
                         <th class="text-center">
-                            <input onkeyup="searchEnums(this)" type="search" name="searchCityGazettes"
+                            <input onkeyup="searchEnums(this,qdTableCities)" type="search" name="searchCityGazettes"
                                 id="searchCityGazettes" size="5">
                         </th>
                         <th class="text-center">
-                            <input onkeyup="searchEnums(this)" type="search" name="searchCityContrib"
+                            <input onkeyup="searchEnums(this,qdTableCities)" type="search" name="searchCityContrib"
                                 id="searchCityContrib" size="5">
+                        </th>
+                        <th class="text-center">
+                            <select
+                                class="text-center"
+                                onchange="qdTableCities.column(this.closest('th').cellIndex).search(this.value).draw()"
+                                name="selectSpiderBase" id="selectSpiderBase">
+                                <option selected value="">RESET</option>
+                                <option value="-">Nenhum</option>
+                            </select>
                         </th>
                     </tr>
                 </thead>
@@ -138,10 +159,11 @@
         </section>
         <section id="cityPage" class="py-2 p-4 d-none">
             <div class="mb-4 text-center">
-                <button onclick="toggleShowSection('tableHome')" type="button"
+                <button id="btnBackCityPage" onclick="toggleShowSection('tableCities')" type="button"
                     class="btn btn-primary btn-sm">Back</button>
                 <h2 class="mt-4" id="cityPageTitle">City Name (IBGE Code)</h2>
-                <span class="d-none text-secondary text-opacity-75">Última Atualização: <b id="dtUpdate">00/00/0000</b></span>
+                <span class="d-none text-secondary text-opacity-75">Última Atualização: <b
+                        id="dtUpdate">00/00/0000</b></span>
             </div>
             <!-- ACCORDIONS -->
             <div class="accordion" id="accordionExample">
@@ -176,8 +198,10 @@
                             <div>
                                 <h5 class="ps-2 border-bottom border-secondary">Collects</h5>
                                 <ul id="cityPageSpiderContainerCollects" class="p-2 list-unstyled">
-                                    <li><b>Total Gazettes: </b><a href="#" target="_blank" rel="noopener noreferrer" id="totalGazettes"
-                                            class="fs-6 badge text-bg-secondary link-underline link-underline-opacity-0">0</a></li>
+                                    <li><b>Total Gazettes: </b><a href="#" target="_blank" rel="noopener noreferrer"
+                                            id="totalGazettes"
+                                            class="fs-6 badge text-bg-secondary link-underline link-underline-opacity-0">0</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div>
@@ -224,8 +248,153 @@
                 </div>
             </div>
         </section>
+        <!-- CONTRIBUTORS -->
+        <section id="tableContributors"
+            class="d-flex flex-column min-vh-100 justify-content-center align-items-center p-2 d-none">
+            <button onclick="toggleShowSection('welcomeHome')" type="button"
+                class="btn btn-primary btn-sm">Home</button>
+            <table id="tableContributorsOverview">
+                <thead>
+                    <tr>
+                        <th class="text-center">Author Name</th>
+                        <th class="text-center">Cities</th>
+                        <th class="text-center">Commits</th>
+                        <th class="text-center">PRs</th>
+                        <th class="text-center">Issues</th>
+                        <!-- <th class="text-center">SumUp</th> -->
+                    </tr>
+                    <tr>
+                        <th class="text-center">
+                            <input
+                                onkeyup="qdTableContributors.column(this.closest('th').cellIndex).search(new RegExp('^'+this.value,'i')).draw()"
+                                type="search" name="searchContributorLogin" id="searchContributorLogin">
+                        </th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this,qdTableContributors)" type="search" name="searchContributorCities"
+                                id="searchContributorCities" size="5">
+                        </th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this,qdTableContributors)" type="search" name="searchContributorCommits"
+                                id="searchContributorCommits" size="5">
+                        </th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this,qdTableContributors)" type="search" name="searchContributorPRs"
+                                id="searchContributorPRs" size="5">
+                        </th>
+                        <th class="text-center">
+                            <input onkeyup="searchEnums(this,qdTableContributors)" type="search" name="searchContributorIssues"
+                                id="searchContributorIssues" size="5">
+                        </th>
+                        <!-- <th class="text-center">
+                        <input onkeyup="searchEnums(this)" type="search" name="searchContributorSumUp"
+                            id="searchContributorSumUp" size="5">
+                    </th> -->
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </section>
+        <section id="contributorPage" class="py-2 p-4 d-none">
+            <div class="mb-4 text-center">
+                <button onclick="toggleShowSection('tableContributors')" type="button"
+                    class="btn btn-primary btn-sm mb-2">Back</button>
+                <div>
+                    <div class="d-inline-flex gap-4 justify-content-center p-2 border border-secondary rounded">
+                        <img style="height: 100px;" class="rounded-circle" id="contributorPageAvatar" src="" alt="">
+                        <div class="vr"></div>
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <span class="fs-4" id="contributorPageTitle">City Name (Parent State)</span>
+                            <a id="contributorPageGithub" class="text-center" href="#" target="_blank"
+                                rel="noopener noreferrer">link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ACCORDIONS -->
+            <div class="accordion" id="accordionContributors">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#contributorsOne" aria-expanded="true" aria-controls="contributorsOne">
+                            Cities (<span id="lenContribCities">0</span>)
+                        </button>
+                    </div>
+                    <div id="contributorsOne" class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionContributors">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary"></h5>
+                                <ul id="contributorPageContributionsContainerCities"
+                                    class="px-4 py-2 d-flex flex-column flex-wrap">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#contributorsTwo" aria-expanded="true" aria-controls="contributorsTwo">
+                            Commits (<span id="lenContribCommits">0</span>)
+                        </button>
+                    </div>
+                    <div id="contributorsTwo" class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionContributors">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary"></h5>
+                                <ul id="contributorPageContributionsContainerCommits" class="px-4 py-2">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#contributorsThree" aria-expanded="true" aria-controls="contributorsThree">
+                            Pull Requests (<span id="lenContribPulls">0</span>)
+                        </button>
+                    </div>
+                    <div id="contributorsThree" class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionContributors">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary"></h5>
+                                <ul id="contributorPageContributionsContainerPulls" class="px-4 py-2">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#contributorsFour" aria-expanded="true" aria-controls="contributorsFour">
+                            Issues (<span id="lenContribIssues">0</span>)
+                        </button>
+                    </div>
+                    <div id="contributorsFour" class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionContributors">
+                        <div class="accordion-body">
+                            <div>
+                                <h5 class="ps-2 border-bottom border-secondary"></h5>
+                                <ul id="contributorPageContributionsContainerIssues" class="px-4 py-2">
+                                    <p>Sem informações!</p>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
     <footer></footer>
 </body>
 <script src="modules/actions.js"></script>
+
 </html>

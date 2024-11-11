@@ -1,14 +1,32 @@
 
 <h1 align="center">Contributions to "Querido Diário" - OKF Project  <br>  (<a href="https://jreagle.github.io/qdcontributions/" target="_blank">https://jreagle.github.io/qdcontributions/</a>)</h1>
 
-![Screenshot of Homepage with Simple Jumbotron Welcome Message and Button Table Page](img/home.png)
+<p align="center">
+<img src="https://jreagle.github.io/qdcontributions/img/home.png" alt="Screenshot of Homepage with Simple Jumbotron Welcome Message and Button Table Page">
+</p>
 
 <h2 align="center"></h2>
 
-### Table Overview (All Cities)
+### Cities Table View (All Cities)
 
-![Screenshot of page with Datatable to Overview and buttons to City Page or back!](img/table.png)
+<p align="center">
+<img src="https://jreagle.github.io/qdcontributions/img/table_cities.png" alt="Screenshot of page with Datatable to Overview Cities and buttons to page specific city or back home!">
+</p>
 
-### City Page (Data Profile)
+### City Page (Data City)
 
-![Screenshot of page with Data Profile of city separe by sections: Metadata, Spider and Contributions!](img/contributions.png)
+<p align="center">
+<img src="https://jreagle.github.io/qdcontributions/img/page_city.png" alt="Screenshot of page with Data Profile of city by sections: Metadata, Spider and Contributions!">
+</p>
+
+### Contributors Table View (All Contributors)
+
+<p align="center">
+<img src="https://jreagle.github.io/qdcontributions/img/table_contributors.png" alt="Screenshot of page with Datatable to Overview Contributors and buttons to page specific contributor or back table view!">
+</p>
+
+### Contributor Page (Data Contributor)
+
+<p align="center">
+<img src="https://jreagle.github.io/qdcontributions/img/page_contributor.png" alt="Screenshot of page with Data Profile of contributor by sections: Cities, Commits, Pull Requests and Issues from author!">
+</p>
