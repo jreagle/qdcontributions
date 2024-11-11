@@ -1,6 +1,6 @@
 
 <p align="center">
-<img width="50%" height="50%" src="https://jreagle.github.io/qdcontributions/img/logo.png" alt="Logo QDContributions - Two Spider Web Overlay with different colors!">
+<img width="10%" src="https://jreagle.github.io/qdcontributions/img/logo.png" alt="Logo QDContributions - Two Spider Web Overlay with different colors!">
 </p>
 
 <h1 align="center">Contributions to "Querido Diário" - OKF Project  <br>  (<a href="https://jreagle.github.io/qdcontributions/" target="_blank">https://jreagle.github.io/qdcontributions/</a>)</h1>
