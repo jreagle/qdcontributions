@@ -30,7 +30,7 @@ if (!localStorage.hasOwnProperty('qd')) {
 
     // LOAD DATA API (STATIC)
     if (Object.keys(qd.cities) <= 0) {
-        qd = await fetch('data/qd6.json').then(r => r.json())
+        qd = await fetch('data/qd.json').then(r => r.json())
         localStorage.setItem('qd', JSON.stringify(qd))
         console.log('LOAD DATA FROM STATIC SERVER!')
     } else {
